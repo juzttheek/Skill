@@ -421,6 +421,26 @@
   gap: 0.35rem;
 }
 
+.sh-job-description {
+  margin: 0;
+  color: #374151;
+  font-size: 0.92rem;
+  line-height: 1.42;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sh-job-card-list .sh-card-body {
+  gap: 0.5rem;
+}
+
+.sh-job-action-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
 @media (max-width: 900px) {
   .sh-nav-links,
   .sh-nav-actions-desktop {

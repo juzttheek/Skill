@@ -1,0 +1,301 @@
+.job-detail-page {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.job-detail-main {
+  padding-top: 78px;
+}
+
+.jd-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.jd-breadcrumb {
+  margin: 0 0 0.8rem;
+  color: #6b7280;
+}
+
+.jd-header-card,
+.jd-content-card,
+.jd-proposal-card,
+.jd-applications-section {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 32px;
+  margin-bottom: 1rem;
+}
+
+.jd-header-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+
+.jd-header-top h1 {
+  margin: 0;
+  color: #111827;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.jd-client-row {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.jd-client-row img {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  object-fit: cover;
+  background: #eaf3de;
+}
+
+.jd-client-name {
+  margin: 0;
+  color: #111827;
+  font-weight: 700;
+}
+
+.jd-client-date {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.86rem;
+}
+
+.jd-meta-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.jd-meta-label {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.jd-meta-grid p {
+  margin: 0.25rem 0 0;
+  color: #111827;
+}
+
+.jd-budget {
+  color: #3b6d11;
+  font-weight: 800;
+  font-size: 1.6rem;
+}
+
+.jd-content-card h2,
+.jd-proposal-card h2,
+.jd-applications-section h2 {
+  margin: 0 0 0.55rem;
+  color: #111827;
+}
+
+.jd-content-card p {
+  margin: 0;
+  color: #374151;
+  line-height: 1.55;
+}
+
+.jd-tags {
+  margin-top: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.jd-applied-banner {
+  border: 1px solid #facc15;
+  border-radius: 12px;
+  background: #faeeda;
+  color: #854f0b;
+  padding: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.jd-proposal-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.jd-proposal-form label {
+  display: grid;
+  gap: 0.35rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.jd-proposal-form textarea,
+.jd-proposal-form input {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.65rem 0.7rem;
+  font: inherit;
+}
+
+.jd-proposal-form textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.jd-proposal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.jd-application-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.jd-application-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.85rem;
+}
+
+.jd-application-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.jd-application-worker {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.jd-application-worker img {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  object-fit: cover;
+  background: #eaf3de;
+}
+
+.jd-worker-name {
+  margin: 0 0 0.2rem;
+  color: #111827;
+  font-weight: 700;
+}
+
+.jd-application-meta {
+  margin-top: 0.6rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.jd-application-meta p {
+  margin: 0;
+  color: #374151;
+}
+
+.jd-cover-toggle {
+  margin-top: 0.65rem;
+  border: 0;
+  background: transparent;
+  color: #3b6d11;
+  cursor: pointer;
+  padding: 0;
+  font-weight: 700;
+}
+
+.jd-cover-letter {
+  margin: 0.45rem 0 0;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.jd-application-actions {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.jd-reject-btn {
+  border: 1px solid #dc2626;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #dc2626;
+  padding: 0.62rem 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.jd-message {
+  margin: 0;
+  color: #854f0b;
+  font-weight: 600;
+}
+
+.jd-muted {
+  margin: 0;
+  color: #6b7280;
+}
+
+.jd-skeleton {
+  max-width: 800px;
+  margin: 2rem auto;
+  height: 420px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #f9f9f6 25%, #f3f4f6 50%, #f9f9f6 75%);
+  background-size: 300% 100%;
+  animation: jd-shimmer 1.2s infinite;
+}
+
+@keyframes jd-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.jd-empty {
+  max-width: 800px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.jd-empty h2 {
+  color: #111827;
+}
+
+.jd-empty a {
+  color: #3b6d11;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .jd-header-card,
+  .jd-content-card,
+  .jd-proposal-card,
+  .jd-applications-section {
+    padding: 18px;
+  }
+
+  .jd-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jd-proposal-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -8,9 +8,11 @@ const formatDeadline = (deadline) => {
   return Number.isNaN(date.getTime()) ? "No deadline" : date.toLocaleDateString();
 };
 
-const JobCard = ({ job = {}, onViewApply }) => {
+const JobCard = ({ job = {}, onViewApply, buttonLabel = "View & Apply", variant = "grid" }) => {
+  const cardClass = variant === "list" ? "sh-card sh-job-card-list" : "sh-card";
+
   return (
-    <article className="sh-card">
+    <article className={cardClass}>
       <div className="sh-card-body">
         <h3 className="sh-job-title">{job.title || "Untitled job"}</h3>
 
@@ -20,6 +22,8 @@ const JobCard = ({ job = {}, onViewApply }) => {
         </div>
 
         <p className="sh-muted">Deadline: {formatDeadline(job.deadline)}</p>
+
+        <p className="sh-job-description">{job.description || "No description available."}</p>
 
         <div className="sh-tags">
           {(job.tags || []).map((tag) => (
@@ -31,9 +35,11 @@ const JobCard = ({ job = {}, onViewApply }) => {
 
         <p className="sh-muted">Client: {job.client?.name || "Unknown Client"}</p>
 
-        <Button variant="primary" onClick={onViewApply}>
-          View & Apply
-        </Button>
+        <div className="sh-job-action-row">
+          <Button variant="primary" onClick={onViewApply}>
+            {buttonLabel}
+          </Button>
+        </div>
       </div>
     </article>
   );
