@@ -1,9 +1,15 @@
 const express = require("express");
+const {
+  sendMessage,
+  getConversation,
+  getConversationList,
+} = require("../controllers/messageController");
+const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.status(200).json({ message: "message route placeholder" });
-});
+router.post("/", protect, sendMessage);
+router.get("/conversations", protect, getConversationList);
+router.get("/conversation/:otherUserId", protect, getConversation);
 
 module.exports = router;
