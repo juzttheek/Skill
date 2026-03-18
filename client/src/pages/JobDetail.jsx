@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { Link, useParams } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
 import Badge from "../components/Badge";
@@ -30,11 +32,21 @@ const JobDetail = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [coverLetter, setCoverLetter] = useState("");
-  const [proposedRate, setProposedRate] = useState("");
-  const [estimatedTime, setEstimatedTime] = useState("");
   const [message, setMessage] = useState("");
   const [expanded, setExpanded] = useState({});
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      coverLetter: "",
+      proposedRate: "",
+      estimatedTime: "",
+    },
+  });
 
   const currentUserId = user?.id || user?._id;
   const isOwner = user && job && user.role === "client" && currentUserId === job.client?._id;
@@ -80,26 +92,25 @@ const JobDetail = () => {
     return formatDate(job.client.createdAt);
   }, [job?.client?.createdAt]);
 
-  const submitProposal = async (event) => {
-    event.preventDefault();
+  const submitProposal = async (values) => {
     setMessage("");
-
-    if (coverLetter.trim().length < 50) {
-      setMessage("Cover letter must be at least 50 characters.");
-      return;
-    }
 
     try {
       setSubmitting(true);
       await axiosInstance.post(`/api/jobs/${id}/apply`, {
-        coverLetter: coverLetter.trim(),
-        proposedRate: proposedRate || undefined,
-        estimatedTime: estimatedTime || undefined,
+        coverLetter: values.coverLetter.trim(),
+        proposedRate: values.proposedRate || undefined,
+        estimatedTime: values.estimatedTime || undefined,
       });
       setMessage("Proposal submitted successfully.");
       setJob((prev) => ({ ...prev, workerApplicationStatus: "pending" }));
+      reset();
+      toast.success("Proposal submitted successfully.");
     } catch (error) {
-      setMessage(error?.response?.data?.message || "Could not submit proposal.");
+      const apiMessage =
+        error?.response?.data?.errors?.[0]?.message || error?.response?.data?.message || "Could not submit proposal.";
+      setMessage(apiMessage);
+      toast.error(apiMessage);
     } finally {
       setSubmitting(false);
     }
@@ -111,8 +122,11 @@ const JobDetail = () => {
       const response = await axiosInstance.get(`/api/jobs/${id}/applications`);
       setApplications(response.data || []);
       setJob((prev) => ({ ...prev, status: "in-progress" }));
+      toast.success("Application accepted.");
     } catch (error) {
-      setMessage(error?.response?.data?.message || "Unable to accept application.");
+      const apiMessage = error?.response?.data?.message || "Unable to accept application.";
+      setMessage(apiMessage);
+      toast.error(apiMessage);
     }
   };
 
@@ -121,8 +135,11 @@ const JobDetail = () => {
       await axiosInstance.patch(`/api/jobs/${id}/applications/${appId}/reject`);
       const response = await axiosInstance.get(`/api/jobs/${id}/applications`);
       setApplications(response.data || []);
+      toast.success("Application rejected.");
     } catch (error) {
-      setMessage(error?.response?.data?.message || "Reject action is currently unavailable.");
+      const apiMessage = error?.response?.data?.message || "Reject action is currently unavailable.";
+      setMessage(apiMessage);
+      toast.error(apiMessage);
     }
   };
 
@@ -217,16 +234,20 @@ const JobDetail = () => {
             ) : (
               <section className="jd-proposal-card">
                 <h2>Submit a Proposal</h2>
-                <form onSubmit={submitProposal} className="jd-proposal-form">
+                <form onSubmit={handleSubmit(submitProposal)} className="jd-proposal-form" noValidate>
                   <label>
                     Cover Letter
                     <textarea
-                      value={coverLetter}
-                      onChange={(event) => setCoverLetter(event.target.value)}
-                      minLength={50}
-                      required
                       placeholder="Explain why you're a great fit for this job."
+                      {...register("coverLetter", {
+                        required: "Cover letter is required",
+                        minLength: {
+                          value: 50,
+                          message: "Cover letter must be at least 50 characters",
+                        },
+                      })}
                     />
+                    {errors.coverLetter ? <span className="jd-field-error">{errors.coverLetter.message}</span> : null}
                   </label>
 
                   <div className="jd-proposal-grid">
@@ -234,20 +255,30 @@ const JobDetail = () => {
                       Proposed Rate
                       <input
                         type="number"
-                        value={proposedRate}
-                        onChange={(event) => setProposedRate(event.target.value)}
                         placeholder="e.g. 300"
+                        {...register("proposedRate", {
+                          min: {
+                            value: 1,
+                            message: "Rate must be greater than 0",
+                          },
+                        })}
                       />
+                      {errors.proposedRate ? <span className="jd-field-error">{errors.proposedRate.message}</span> : null}
                     </label>
 
                     <label>
                       Estimated Time
                       <input
                         type="text"
-                        value={estimatedTime}
-                        onChange={(event) => setEstimatedTime(event.target.value)}
                         placeholder="e.g. 5 days"
+                        {...register("estimatedTime", {
+                          minLength: {
+                            value: 2,
+                            message: "Estimated time must be at least 2 characters",
+                          },
+                        })}
                       />
+                      {errors.estimatedTime ? <span className="jd-field-error">{errors.estimatedTime.message}</span> : null}
                     </label>
                   </div>
 

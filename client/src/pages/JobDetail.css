@@ -144,6 +144,12 @@
   font: inherit;
 }
 
+.jd-field-error {
+  color: #dc2626;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
 .jd-proposal-form textarea {
   min-height: 140px;
   resize: vertical;

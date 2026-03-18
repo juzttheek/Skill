@@ -441,7 +441,7 @@
   justify-content: flex-end;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .sh-nav-links,
   .sh-nav-actions-desktop {
     display: none;

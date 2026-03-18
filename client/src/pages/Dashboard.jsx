@@ -1,4 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import Badge from "../components/Badge";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
@@ -163,29 +165,54 @@ const statusToTone = {
 };
 
 const Dashboard = () => {
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, loading: authLoading } = useAuth();
 
   const role = user?.role || "client";
   const sectionList = role === "worker" ? workerSections : clientSections;
   const [activeSection, setActiveSection] = useState("Overview");
   const [services, setServices] = useState(servicesMock);
   const [avatarPreview, setAvatarPreview] = useState(user?.avatar || "");
-  const [accountForm, setAccountForm] = useState({
-    name: user?.name || "",
-    bio: "",
-    location: "",
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-    skills: ["React", "UI Design"],
-    skillInput: "",
-    hourlyRate: "45",
-    availability: true,
+  const [skills, setSkills] = useState(["React", "UI Design"]);
+  const [skillInput, setSkillInput] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: {
+      name: user?.name || "",
+      location: "",
+      bio: "",
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+      hourlyRate: "45",
+      availability: true,
+    },
   });
+
+  const newPasswordValue = watch("newPassword");
 
   const welcomeName = user?.name || "there";
 
   const isWorker = role === "worker";
+
+  useEffect(() => {
+    reset({
+      name: user?.name || "",
+      location: "",
+      bio: "",
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+      hourlyRate: "45",
+      availability: true,
+    });
+    setAvatarPreview(user?.avatar || "");
+  }, [user, reset]);
 
   const overviewSection = useMemo(() => {
     if (isWorker) {
@@ -428,60 +455,61 @@ const Dashboard = () => {
   };
 
   const addSkill = () => {
-    const skill = accountForm.skillInput.trim();
+    const skill = skillInput.trim();
     if (!skill) return;
-    setAccountForm((prev) => ({
-      ...prev,
-      skills: [...prev.skills, skill],
-      skillInput: "",
-    }));
+    setSkills((prev) => [...prev, skill]);
+    setSkillInput("");
   };
 
   const removeSkill = (skill) => {
-    setAccountForm((prev) => ({
-      ...prev,
-      skills: prev.skills.filter((item) => item !== skill),
-    }));
+    setSkills((prev) => prev.filter((item) => item !== skill));
+  };
+
+  const saveAccountSettings = (values) => {
+    updateUser({ name: values.name, avatar: avatarPreview || user?.avatar || "" });
+    toast.success("Account settings saved.");
+    reset({
+      ...values,
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
   };
 
   const renderAccountSettings = () => (
     <section className="dash-panel">
       <h2>Account Settings</h2>
 
-      <form
-        className="dash-settings-form"
-        onSubmit={(event) => {
-          event.preventDefault();
-          updateUser({ name: accountForm.name, avatar: avatarPreview || user?.avatar || "" });
-        }}
-      >
+      <form className="dash-settings-form" onSubmit={handleSubmit(saveAccountSettings)} noValidate>
         <div className="dash-settings-grid">
           <label>
             Name
             <input
               type="text"
-              value={accountForm.name}
-              onChange={(event) =>
-                setAccountForm((prev) => ({
-                  ...prev,
-                  name: event.target.value,
-                }))
-              }
+              {...register("name", {
+                required: "Name is required",
+                minLength: {
+                  value: 2,
+                  message: "Name must be at least 2 characters",
+                },
+              })}
             />
+            {errors.name ? <span className="dash-field-error">{errors.name.message}</span> : null}
           </label>
 
           <label>
             Location
             <input
               type="text"
-              value={accountForm.location}
-              onChange={(event) =>
-                setAccountForm((prev) => ({
-                  ...prev,
-                  location: event.target.value,
-                }))
-              }
+              {...register("location", {
+                required: "Location is required",
+                minLength: {
+                  value: 2,
+                  message: "Location must be at least 2 characters",
+                },
+              })}
             />
+            {errors.location ? <span className="dash-field-error">{errors.location.message}</span> : null}
           </label>
         </div>
 
@@ -502,56 +530,40 @@ const Dashboard = () => {
 
         <label>
           Bio
-          <textarea
-            value={accountForm.bio}
-            onChange={(event) =>
-              setAccountForm((prev) => ({
-                ...prev,
-                bio: event.target.value,
-              }))
-            }
-          />
+          <textarea {...register("bio", { required: "Bio is required", minLength: { value: 10, message: "Bio must be at least 10 characters" } })} />
+          {errors.bio ? <span className="dash-field-error">{errors.bio.message}</span> : null}
         </label>
 
         <div className="dash-settings-grid">
           <label>
             Current Password
-            <input
-              type="password"
-              value={accountForm.currentPassword}
-              onChange={(event) =>
-                setAccountForm((prev) => ({
-                  ...prev,
-                  currentPassword: event.target.value,
-                }))
-              }
-            />
+            <input type="password" {...register("currentPassword")} />
           </label>
           <label>
             New Password
             <input
               type="password"
-              value={accountForm.newPassword}
-              onChange={(event) =>
-                setAccountForm((prev) => ({
-                  ...prev,
-                  newPassword: event.target.value,
-                }))
-              }
+              {...register("newPassword", {
+                minLength: {
+                  value: 8,
+                  message: "New password must be at least 8 characters",
+                },
+              })}
             />
+            {errors.newPassword ? <span className="dash-field-error">{errors.newPassword.message}</span> : null}
           </label>
           <label>
             Confirm Password
             <input
               type="password"
-              value={accountForm.confirmPassword}
-              onChange={(event) =>
-                setAccountForm((prev) => ({
-                  ...prev,
-                  confirmPassword: event.target.value,
-                }))
-              }
+              {...register("confirmPassword", {
+                validate: (value) => {
+                  if (!newPasswordValue) return true;
+                  return value === newPasswordValue || "Passwords do not match";
+                },
+              })}
             />
+            {errors.confirmPassword ? <span className="dash-field-error">{errors.confirmPassword.message}</span> : null}
           </label>
         </div>
 
@@ -562,26 +574,21 @@ const Dashboard = () => {
                 Hourly Rate
                 <input
                   type="number"
-                  value={accountForm.hourlyRate}
-                  onChange={(event) =>
-                    setAccountForm((prev) => ({
-                      ...prev,
-                      hourlyRate: event.target.value,
-                    }))
-                  }
+                  {...register("hourlyRate", {
+                    required: "Hourly rate is required",
+                    min: {
+                      value: 1,
+                      message: "Hourly rate must be greater than 0",
+                    },
+                  })}
                 />
+                {errors.hourlyRate ? <span className="dash-field-error">{errors.hourlyRate.message}</span> : null}
               </label>
 
               <label className="dash-toggle-row">
                 <input
                   type="checkbox"
-                  checked={accountForm.availability}
-                  onChange={(event) =>
-                    setAccountForm((prev) => ({
-                      ...prev,
-                      availability: event.target.checked,
-                    }))
-                  }
+                  {...register("availability")}
                 />
                 <span>Available for work</span>
               </label>
@@ -592,13 +599,8 @@ const Dashboard = () => {
               <div className="dash-skill-input-row">
                 <input
                   type="text"
-                  value={accountForm.skillInput}
-                  onChange={(event) =>
-                    setAccountForm((prev) => ({
-                      ...prev,
-                      skillInput: event.target.value,
-                    }))
-                  }
+                  value={skillInput}
+                  onChange={(event) => setSkillInput(event.target.value)}
                   placeholder="Add a skill"
                 />
                 <Button type="button" variant="outline" onClick={addSkill}>
@@ -607,7 +609,7 @@ const Dashboard = () => {
               </div>
 
               <div className="dash-skill-tags">
-                {accountForm.skills.map((skill) => (
+                {skills.map((skill) => (
                   <button key={skill} type="button" className="dash-skill-chip" onClick={() => removeSkill(skill)}>
                     {skill} ×
                   </button>
@@ -617,12 +619,31 @@ const Dashboard = () => {
           </>
         ) : null}
 
-        <Button type="submit" variant="primary">
+        <Button type="submit" variant="primary" loading={isSubmitting}>
           Save
         </Button>
       </form>
     </section>
   );
+
+  if (authLoading) {
+    return (
+      <div className="dashboard-page">
+        <Navbar />
+        <main className="dashboard-main">
+          <div className="dash-shell">
+            <div className="dash-loading-grid">
+              <div className="dash-loading-block" />
+              <div className="dash-loading-block" />
+              <div className="dash-loading-block" />
+              <div className="dash-loading-block" />
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-page">

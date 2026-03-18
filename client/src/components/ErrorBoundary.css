@@ -1,0 +1,59 @@
+.sh-error-fallback {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: radial-gradient(circle at 10% 20%, #fff5de 0%, #ffffff 45%, #f6f9f2 100%);
+}
+
+.sh-error-card {
+  width: min(560px, 100%);
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 1.2rem;
+  box-shadow: 0 14px 40px rgba(17, 24, 39, 0.12);
+}
+
+.sh-error-kicker {
+  margin: 0;
+  color: #854f0b;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.sh-error-card h1 {
+  margin: 0.5rem 0;
+  color: #111827;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.sh-error-card p {
+  margin: 0;
+  color: #4b5563;
+}
+
+.sh-error-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.sh-error-actions button,
+.sh-error-actions a {
+  border: 1px solid #3b6d11;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #3b6d11;
+  padding: 0.55rem 0.8rem;
+  text-decoration: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sh-error-actions button:hover,
+.sh-error-actions a:hover {
+  background: #eaf3de;
+}
